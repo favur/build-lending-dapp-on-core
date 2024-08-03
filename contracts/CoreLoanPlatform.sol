@@ -1,7 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract CoreLoanPlatform {
+	//Declaring the standard interace
+	IERC20 immutable public USD; //Asset used as collateral
+	IERC20 immutable public BTC; //Borrowing asset
+
     //variable declaraion
     uint256 public constant COLLATERAL_RATIO = 150; //150% collaterization
     uint256 public constant BORROWABLE_RATIO = 80; //80% of collateral borrowable
