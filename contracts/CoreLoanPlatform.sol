@@ -40,29 +40,36 @@ contract CoreLoanPlatform is Ownable {
 
     constructor(address _USD, address _BTC) Ownable(msg.sender) {
       require(_USD != address(0) && _BTC != address(0), "Invalid token addresses");
+      
       USD = IERC20(_USD);
       BTC = IERC20(_BTC);
     }
 
-    function depositCollateral(uint256 amount) external  {
+    function depositCollateral(uint256 amount) external {
       require(amount > 0, "Amount must be greater than 0");
+      
       USD.safeTransferFrom(msg.sender, address(this), amount);
       userCollateral[msg.sender] += amount;
+      
       emit CollateralDeposited(msg.sender, amount);
     }
 
-    function withdrawCollateral(uint256 amount) external  {
+    function withdrawCollateral(uint256 amount) external {
       require(amount > 0, "Amount must be greater than 0");
       require(userCollateral[msg.sender] >= amount, "Insufficient collateral");
+      
       uint256 borrowedAmount = loans[msg.sender].active ? loans[msg.sender].amount : 0;
       uint256 requiredCollateral = (borrowedAmount * COLLATERAL_RATIO) / 100;
+      
       require(userCollateral[msg.sender] - amount >= requiredCollateral, "Withdrawal would undercollateralize loan");
+      
       userCollateral[msg.sender] -= amount;
       USD.safeTransfer(msg.sender, amount);
+      
       emit CollateralWithdrawn(msg.sender, amount);
     }
 
-    function borrowBTC(uint256 amount) external  {
+    function borrowBTC(uint256 amount) external {
       require(amount > 0, "Amount must be greater than 0");
       require(!loans[msg.sender].active, "Existing loan must be repaid first");
 
@@ -90,22 +97,37 @@ contract CoreLoanPlatform is Ownable {
       return userCollateral[user];
     }    
 
-    function depositBTC(uint256 amount) external  {
-      // TODO : Implement Logic for deposting BTC
+    function depositBTC(uint256 amount) external {
+      require(amount > 0, "Amount must be greater than 0");
+      
+      BTC.safeTransferFrom(msg.sender, address(this), amount);
+      
+      lenderBalances[msg.sender] += amount;
+      totalStaked = totalStaked + amount;
+      
+      emit BTCDeposited(msg.sender, amount);
     }
 
-    function withdrawBTC(uint256 amount) external  {
-      // TODO : Implement Logic for withdrawing BTC
+    function withdrawBTC(uint256 amount) external {
+      require(amount > 0, "Amount must be greater than 0");
+      require(lenderBalances[msg.sender] >= amount, "Insufficient balance");
+      
+      lenderBalances[msg.sender] -= amount;
+      totalStaked = totalStaked - amount;
+      
+      BTC.safeTransfer(msg.sender, amount);
+      
+      emit BTCWithdrawn(msg.sender, amount);
     }
 
     function getUserStaked(address user) external view returns (uint256) {
-      // TODO : Implement Logic for fetching a User's Staked amount
+      return lenderBalances[user];
     }
 
     function getCurrentApy() external pure returns (uint256) {
-      // TODO : Implement Logic for fetching current APY
+      return INTEREST_RATE;
     }
-
+    
     function repayLoan(address user) external  {
       // TODO : Implement Logic for repaying Loan
     }
