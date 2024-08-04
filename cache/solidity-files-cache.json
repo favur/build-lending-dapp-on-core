@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "C:\\Users\\Kingswealth\\core_dev_test\\build-lending-dapp-on-core\\contracts\\CoreLoanPlatform.sol": {
-      "lastModificationDate": 1722683840237,
-      "contentHash": "6ad289bf2a2f447bb7c81f732f3bb747",
+      "lastModificationDate": 1722686899305,
+      "contentHash": "0666527bfd99a4aa430d76cf7dd801c1",
       "sourceName": "contracts/CoreLoanPlatform.sol",
       "solcConfig": {
         "version": "0.8.24",
